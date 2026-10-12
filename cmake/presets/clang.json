@@ -1,0 +1,57 @@
+{
+  "version": 9,
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "clang",
+      "displayName": "Clang Base Configuration",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "clang-release",
+      "displayName": "Clang Release",
+      "inherits": [
+        "clang",
+        "release"
+      ]
+    },
+    {
+      "name": "clang-relwithdeb",
+      "displayName": "Clang RelWithDeb",
+      "inherits": [
+        "clang",
+        "relwithdeb"
+      ]
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug",
+      "inherits": [
+        "clang",
+        "debug"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "clang-release",
+      "configurePreset": "clang-release"
+    },
+    {
+      "name": "clang-relwithdeb",
+      "configurePreset": "clang-relwithdeb"
+    },
+    {
+      "name": "clang-debug",
+      "configurePreset": "clang-debug"
+    }
+  ]
+}

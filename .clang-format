@@ -1,0 +1,41 @@
+Standard: c++20
+
+UseTab: Never
+IndentWidth: 2
+AccessModifierOffset: -1
+ContinuationIndentWidth: 2
+ConstructorInitializerIndentWidth: 2
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+InsertBraces: true
+
+ColumnLimit: 80
+ReflowComments: true
+BreakBeforeBraces: Attach
+AlwaysBreakTemplateDeclarations: Yes
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+QualifierAlignment: Right
+
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLambdasOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+
+AlignConsecutiveAssignments: Consecutive
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
+
+IndentPPDirectives: BeforeHash
+AlignEscapedNewlines: Right
+SortIncludes: true
+
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: Never

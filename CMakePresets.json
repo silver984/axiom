@@ -1,0 +1,8 @@
+{
+  "version": 9,
+  "include": [
+    "cmake/presets/clang.json",
+    "cmake/presets/gnu.json",
+    "cmake/presets/msvc.json"
+  ]
+}
