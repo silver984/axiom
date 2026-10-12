@@ -62,7 +62,7 @@ class operable_array {
   using value_type   = ValueType;
 
   template <traits::op_arr Self>
-  [[nodiscard]] constexpr auto operator+(this Self& self) {
+  [[nodiscard]] constexpr auto operator+(this Self&& self) {
     return std::forward_like<Self>(self);
   }
 
