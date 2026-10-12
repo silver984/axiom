@@ -44,7 +44,7 @@ concept op_arr = requires(T a, T const b, std::uint8_t i) {
 };
 
 template <typename T>
-concept numeric_or_op_arr = scalar<T> || op_arr<T>;
+concept scalar_or_op_arr = scalar<T> || op_arr<T>;
 
 // TODO(silver984): implement for other operations
 template <typename T>
@@ -75,7 +75,7 @@ class operable_array {
     return out;
   }
 
-  template <traits::op_arr Self, traits::numeric_or_op_arr Rhs>
+  template <traits::op_arr Self, traits::scalar_or_op_arr Rhs>
     requires(!traits::op_arr_no_addition<Self>)
   [[nodiscard]] constexpr auto operator+(this Self const& self,
                                          Rhs const& rhs) {
@@ -83,21 +83,21 @@ class operable_array {
       .template evaluate<operations::addition>(rhs);
   }
 
-  template <traits::op_arr Self, traits::numeric_or_op_arr Rhs>
+  template <traits::op_arr Self, traits::scalar_or_op_arr Rhs>
   [[nodiscard]] constexpr auto operator-(this Self const& self,
                                          Rhs const& rhs) {
     return std::forward_like<Self>(self)
       .template evaluate<operations::subtraction>(rhs);
   }
 
-  template <traits::op_arr Self, traits::numeric_or_op_arr Rhs>
+  template <traits::op_arr Self, traits::scalar_or_op_arr Rhs>
   [[nodiscard]] constexpr auto operator*(this Self const& self,
                                          Rhs const& rhs) {
     return std::forward_like<Self>(self)
       .template evaluate<operations::multiplication>(rhs);
   }
 
-  template <traits::op_arr Self, traits::numeric_or_op_arr Rhs>
+  template <traits::op_arr Self, traits::scalar_or_op_arr Rhs>
   [[nodiscard]] constexpr auto operator/(this Self const& self,
                                          Rhs const& rhs) {
     return std::forward_like<Self>(self)
@@ -110,7 +110,7 @@ class operable_array {
 
  private:
   template <typename Operation, traits::op_arr Self,
-            traits::numeric_or_op_arr Rhs>
+            traits::scalar_or_op_arr Rhs>
   [[nodiscard]] constexpr auto evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
     if constexpr (traits::scalar<Rhs>) {
@@ -134,7 +134,7 @@ class operable_array {
   }
 
   template <typename Operation, traits::op_arr Self,
-            traits::numeric_or_op_arr Rhs>
+            traits::scalar_or_op_arr Rhs>
   constexpr auto perform(this Self& self, Rhs const& rhs) {
     Operation operation{};
     for (std::uint8_t i = 0; i < capacity; ++i) {
