@@ -25,8 +25,8 @@ SOFTWARE.
 #ifndef AXIOM_OPERABLE_ARRAY_H_
 #define AXIOM_OPERABLE_ARRAY_H_
 
-#include "numeric.h"
 #include "operations.h"
+#include "scalar.h"
 
 #include <concepts>
 #include <cstdint>
@@ -38,13 +38,13 @@ namespace axiom::traits {
 template <typename T>
 concept op_arr = requires(T a, T const b, std::uint8_t i) {
   typename T::axiom_op_arr;
-  requires traits::numeric<typename T::value_type>;
+  requires scalar<typename T::value_type>;
   { a[i] } -> std::same_as<typename T::value_type&>;
   { b[i] } -> std::same_as<typename T::value_type const&>;
 };
 
 template <typename T>
-concept numeric_or_op_arr = numeric<T> || op_arr<T>;
+concept numeric_or_op_arr = scalar<T> || op_arr<T>;
 
 // TODO(silver984): implement for other operations
 template <typename T>
@@ -54,8 +54,8 @@ concept op_arr_no_addition = op_arr<T> && requires { typename T::no_addition; };
 
 namespace axiom {
 
-template <template <traits::numeric> typename Derived,
-          traits::numeric ValueType, std::uint8_t Capacity>
+template <template <traits::scalar> typename Derived, traits::scalar ValueType,
+          std::uint8_t Capacity>
 class operable_array {
  public:
   using axiom_op_arr = void;
@@ -113,7 +113,7 @@ class operable_array {
             traits::numeric_or_op_arr Rhs>
   [[nodiscard]] constexpr auto evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
-    if constexpr (traits::numeric<Rhs>) {
+    if constexpr (traits::scalar<Rhs>) {
       using common_value_t = std::common_type_t<ValueType, Rhs>;
       Derived<common_value_t> out{};
       for (std::uint8_t i = 0; i < capacity; ++i) {
@@ -138,7 +138,7 @@ class operable_array {
   constexpr auto perform(this Self& self, Rhs const& rhs) {
     Operation operation{};
     for (std::uint8_t i = 0; i < capacity; ++i) {
-      if constexpr (traits::numeric<Rhs>) {
+      if constexpr (traits::scalar<Rhs>) {
         operation(self[i], static_cast<ValueType>(rhs));
       } else {
         operation(self[i], static_cast<ValueType>(rhs[i]));

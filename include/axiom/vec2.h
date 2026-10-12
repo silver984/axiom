@@ -25,13 +25,12 @@ SOFTWARE.
 #ifndef AXIOM_VEC2_H_
 #define AXIOM_VEC2_H_
 
-#include "axiom/operable_array.h"
-#include "numeric.h"
 #include "operable_array.h"
+#include "scalar.h"
 
 namespace axiom {
 
-template <traits::numeric T = float>
+template <traits::scalar T = float>
 struct vec2 final : public operable_array<vec2, T, 2> {
   constexpr vec2() = default;
 

@@ -29,7 +29,7 @@ SOFTWARE.
 
 namespace axiom::traits {
 template <typename T>
-concept numeric = std::is_arithmetic_v<T>;
+concept scalar = std::is_scalar_v<T>;
 } // namespace axiom::traits
 
 #endif // AXIOM_NUMERIC_H_
