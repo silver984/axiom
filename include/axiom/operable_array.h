@@ -36,9 +36,9 @@ class operable_array {
   template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
     requires(!traits::no_addition_operable_array<Self>)
   [[nodiscard]] constexpr auto operator+(this Self const& self, Rhs const& rhs) {
-    if constexpr (requires {
-                    typename Self::addition;
+    if constexpr (requires(typename Self::addition a) {
                     requires std::is_default_constructible_v<typename Self::addition>;
+                    a(self, rhs);
                   }) {
       using custom_addition = typename Self::addition;
       custom_addition operation{};
@@ -49,18 +49,48 @@ class operable_array {
   }
 
   template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+    requires(!traits::no_subtraction_operable_array<Self>)
   [[nodiscard]] constexpr auto operator-(this Self const& self, Rhs const& rhs) {
-    return std::forward_like<Self>(self).template evaluate<operations::subtraction>(rhs);
+    if constexpr (requires(typename Self::subtraction a) {
+                    requires std::is_default_constructible_v<typename Self::subtraction>;
+                    a(self, rhs);
+                  }) {
+      using custom_subtraction = typename Self::custom_subtraction;
+      custom_subtraction operation{};
+      return operation(self, rhs);
+    } else {
+      return std::forward_like<Self>(self).template evaluate<operations::subtraction>(rhs);
+    }
   }
 
   template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+    requires(!traits::no_multiplication_operable_array<Self>)
   [[nodiscard]] constexpr auto operator*(this Self const& self, Rhs const& rhs) {
-    return std::forward_like<Self>(self).template evaluate<operations::multiplication>(rhs);
+    if constexpr (requires(typename Self::multiplication a) {
+                    requires std::is_default_constructible_v<typename Self::multiplication>;
+                    a(self, rhs);
+                  }) {
+      using custom_multiplication = typename Self::multiplication;
+      custom_multiplication operation{};
+      return operation(self, rhs);
+    } else {
+      return std::forward_like<Self>(self).template evaluate<operations::multiplication>(rhs);
+    }
   }
 
   template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+    requires(!traits::no_division_operable_array<Self>)
   [[nodiscard]] constexpr auto operator/(this Self const& self, Rhs const& rhs) {
-    return std::forward_like<Self>(self).template evaluate<operations::division>(rhs);
+    if constexpr (requires(typename Self::division a) {
+                    requires std::is_default_constructible_v<typename Self::division>;
+                    a(self, rhs);
+                  }) {
+      using custom_division = typename Self::division;
+      custom_division operation{};
+      return operation(self, rhs);
+    } else {
+      return std::forward_like<Self>(self).template evaluate<operations::division>(rhs);
+    }
   }
 
   // TODO(silver984): All other operators
@@ -72,18 +102,19 @@ class operable_array {
   [[nodiscard]] constexpr auto evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
     if constexpr (traits::arithmetic<Rhs>) {
-      using common_value_t = std::common_type_t<ValueType, Rhs>;
-      Derived<common_value_t> out{};
+      using common_value_type = std::common_type_t<ValueType, Rhs>;
+      Derived<common_value_type> out{};
       for (std::uint8_t i = 0; i < capacity; ++i) {
-        out[i] = operation(static_cast<common_value_t>(self[i]), static_cast<common_value_t>(rhs));
+        out[i] =
+          operation(static_cast<common_value_type>(self[i]), static_cast<common_value_type>(rhs));
       }
       return out;
     } else {
-      using common_value_t = std::common_type_t<ValueType, typename Rhs::value_type>;
-      Derived<common_value_t> out{};
+      using common_value_type = std::common_type_t<ValueType, typename Rhs::value_type>;
+      Derived<common_value_type> out{};
       for (std::uint8_t i = 0; i < capacity; ++i) {
-        out[i] =
-          operation(static_cast<common_value_t>(self[i]), static_cast<common_value_t>(rhs[i]));
+        out[i] = operation(static_cast<common_value_type>(self[i]),
+                           static_cast<common_value_type>(rhs[i]));
       }
       return out;
     }

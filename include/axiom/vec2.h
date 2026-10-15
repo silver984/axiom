@@ -6,23 +6,10 @@
 
 #include "operable_array.h"
 
-namespace axiom::internal {
-
-struct vec2_addition final {
-  template <traits::operable_array Vec2, traits::scalar_or_operable_array Rhs>
-  [[nodiscard]] constexpr auto operator()(Vec2 const& v, Rhs const& rhs) const {
-    return 0;
-  }
-};
-
-} // namespace axiom::internal
-
 namespace axiom {
 
 template <traits::arithmetic T = float>
 struct vec2 final : public operable_array<vec2, T, 2> {
-  using addition = internal::vec2_addition;
-
   constexpr vec2() = default;
 
   constexpr vec2(T v)
