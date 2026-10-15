@@ -9,7 +9,7 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 InsertBraces: true
 
-ColumnLimit: 80
+ColumnLimit: 100
 ReflowComments: true
 BreakBeforeBraces: Attach
 AlwaysBreakTemplateDeclarations: Yes

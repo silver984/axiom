@@ -10,7 +10,7 @@
 namespace axiom::internal {
 
 struct vec2_addition final {
-  template <traits::op_arr Vec2, traits::scalar_or_op_arr Rhs>
+  template <traits::operable_array Vec2, traits::scalar_or_operable_array Rhs>
   [[nodiscard]] constexpr auto operator()(Vec2 const& v, Rhs const& rhs) const {
     return 0;
   }
