@@ -5,7 +5,6 @@
 #define AXIOM_VEC2_H_
 
 #include "operable_array.h"
-#include "scalar.h"
 
 namespace axiom::internal {
 

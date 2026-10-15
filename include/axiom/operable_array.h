@@ -5,31 +5,10 @@
 #define AXIOM_OPERABLE_ARRAY_H_
 
 #include "operations.h"
-#include "scalar.h"
+#include "traits.h"
 
-#include <concepts>
 #include <cstdint>
-#include <type_traits>
 #include <utility>
-
-namespace axiom::traits {
-
-template <typename T>
-concept operable_array = requires(T a, T const b, std::uint8_t i) {
-  typename T::axiom_operable_array;
-  requires scalar<typename T::value_type>;
-  { a[i] } -> std::same_as<typename T::value_type&>;
-  { b[i] } -> std::same_as<typename T::value_type const&>;
-};
-
-template <typename T>
-concept scalar_or_operable_array = scalar<T> || operable_array<T>;
-
-// TODO(silver984): implement for other operations
-template <typename T>
-concept no_addition_operable_array = operable_array<T> && requires { typename T::no_addition; };
-
-} // namespace axiom::traits
 
 namespace axiom {
 
