@@ -19,7 +19,7 @@ struct vec2_addition final {
 
 namespace axiom {
 
-template <traits::scalar T = float>
+template <traits::arithmetic T = float>
 struct vec2 final : public operable_array<vec2, T, 2> {
   using addition = internal::vec2_addition;
 

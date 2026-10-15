@@ -12,7 +12,7 @@
 
 namespace axiom {
 
-template <template <traits::scalar> typename Derived, traits::scalar ValueType,
+template <template <traits::arithmetic> typename Derived, traits::arithmetic ValueType,
           std::uint8_t Capacity>
 class operable_array {
  public:
@@ -71,7 +71,7 @@ class operable_array {
   template <typename Operation, traits::operable_array Self, traits::scalar_or_operable_array Rhs>
   [[nodiscard]] constexpr auto evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
-    if constexpr (traits::scalar<Rhs>) {
+    if constexpr (traits::arithmetic<Rhs>) {
       using common_value_t = std::common_type_t<ValueType, Rhs>;
       Derived<common_value_t> out{};
       for (std::uint8_t i = 0; i < capacity; ++i) {
@@ -93,7 +93,7 @@ class operable_array {
   constexpr auto perform(this Self& self, Rhs const& rhs) {
     Operation operation{};
     for (std::uint8_t i = 0; i < capacity; ++i) {
-      if constexpr (traits::scalar<Rhs>) {
+      if constexpr (traits::arithmetic<Rhs>) {
         operation(self[i], static_cast<ValueType>(rhs));
       } else {
         operation(self[i], static_cast<ValueType>(rhs[i]));
