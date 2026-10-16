@@ -5,6 +5,7 @@
 
 int main() {
   constexpr axiom::vec2<> a(8.f);
-  constexpr auto c = a + 0.f;
+  constexpr auto c = a + a;
+  constexpr auto b = c.x;
   return 0;
 }

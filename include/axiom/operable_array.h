@@ -33,7 +33,7 @@ class operable_array {
     return out;
   }
 
-  template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
     requires(!traits::no_addition_operable_array<Self>)
   [[nodiscard]] constexpr auto operator+(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::addition a) {
@@ -48,7 +48,7 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
     requires(!traits::no_subtraction_operable_array<Self>)
   [[nodiscard]] constexpr auto operator-(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::subtraction a) {
@@ -63,7 +63,7 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
     requires(!traits::no_multiplication_operable_array<Self>)
   [[nodiscard]] constexpr auto operator*(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::multiplication a) {
@@ -78,7 +78,7 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
     requires(!traits::no_division_operable_array<Self>)
   [[nodiscard]] constexpr auto operator/(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::division a) {
@@ -98,7 +98,8 @@ class operable_array {
   static constexpr std::uint8_t capacity = Capacity;
 
  private:
-  template <typename Operation, traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <typename Operation, traits::operable_array Self,
+            traits::arithmetic_or_operable_array Rhs>
   [[nodiscard]] constexpr auto evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
     if constexpr (traits::arithmetic<Rhs>) {
@@ -120,7 +121,8 @@ class operable_array {
     }
   }
 
-  template <typename Operation, traits::operable_array Self, traits::scalar_or_operable_array Rhs>
+  template <typename Operation, traits::operable_array Self,
+            traits::arithmetic_or_operable_array Rhs>
   constexpr auto perform(this Self& self, Rhs const& rhs) {
     Operation operation{};
     for (std::uint8_t i = 0; i < capacity; ++i) {

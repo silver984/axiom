@@ -22,12 +22,9 @@ struct vec2 final : public operable_array<vec2, T, 2> {
     , y(yv) {
   }
 
-  constexpr T& operator[](uint8_t i) {
-    return i == 0 ? x : y;
-  }
-
-  [[nodiscard]] constexpr T const& operator[](uint8_t i) const {
-    return i == 0 ? x : y;
+  template <typename Self>
+  constexpr auto&& operator[](this Self&& self, uint8_t i) {
+    return i == 0 ? std::forward_like<Self>(self.x) : std::forward_like<Self>(self.y);
   }
 
   T x = T{0};

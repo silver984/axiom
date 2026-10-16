@@ -21,7 +21,7 @@ concept operable_array = requires(T a, T const b, std::uint8_t i) {
 };
 
 template <typename T>
-concept scalar_or_operable_array = arithmetic<T> || operable_array<T>;
+concept arithmetic_or_operable_array = arithmetic<T> || operable_array<T>;
 
 template <typename T>
 concept no_addition_operable_array = operable_array<T> && requires { typename T::no_addition; };
