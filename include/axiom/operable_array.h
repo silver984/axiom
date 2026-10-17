@@ -33,8 +33,9 @@ class operable_array {
     return out;
   }
 
-  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
-    requires(!traits::no_addition_operable_array<Self>)
+  template <traits::operable_array Self, typename Rhs>
+    requires(!traits::no_addition_operable_array<Self>) &&
+            (traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   [[nodiscard]] constexpr decltype(auto) operator+(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::addition a) {
                     requires std::is_default_constructible_v<typename Self::addition>;
@@ -48,8 +49,9 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
-    requires(!traits::no_subtraction_operable_array<Self>)
+  template <traits::operable_array Self, typename Rhs>
+    requires(!traits::no_subtraction_operable_array<Self>) &&
+            (traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   [[nodiscard]] constexpr decltype(auto) operator-(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::subtraction a) {
                     requires std::is_default_constructible_v<typename Self::subtraction>;
@@ -63,8 +65,9 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
-    requires(!traits::no_multiplication_operable_array<Self>)
+  template <traits::operable_array Self, typename Rhs>
+    requires(!traits::no_multiplication_operable_array<Self>) &&
+            (traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   [[nodiscard]] constexpr decltype(auto) operator*(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::multiplication a) {
                     requires std::is_default_constructible_v<typename Self::multiplication>;
@@ -78,8 +81,9 @@ class operable_array {
     }
   }
 
-  template <traits::operable_array Self, traits::arithmetic_or_operable_array Rhs>
-    requires(!traits::no_division_operable_array<Self>)
+  template <traits::operable_array Self, typename Rhs>
+    requires(!traits::no_division_operable_array<Self>) &&
+            (traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   [[nodiscard]] constexpr decltype(auto) operator/(this Self const& self, Rhs const& rhs) {
     if constexpr (requires(typename Self::division a) {
                     requires std::is_default_constructible_v<typename Self::division>;
@@ -98,19 +102,11 @@ class operable_array {
   static constexpr std::size_t capacity = Capacity;
 
  private:
-  template <typename Operation, traits::operable_array Self,
-            traits::arithmetic_or_operable_array Rhs>
+  template <typename Operation, traits::operable_array Self, typename Rhs>
+    requires(traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   [[nodiscard]] constexpr decltype(auto) evaluate(this Self const& self, Rhs const& rhs) {
     Operation operation{};
-    if constexpr (traits::arithmetic<Rhs>) {
-      using common_value_type = std::common_type_t<ValueType, Rhs>;
-      Derived<common_value_type> out{};
-      for (std::size_t i = 0; i < capacity; ++i) {
-        out[i] =
-          operation(static_cast<common_value_type>(self[i]), static_cast<common_value_type>(rhs));
-      }
-      return out;
-    } else {
+    if constexpr (traits::same_capacity_operable_arrays<Self, Rhs>) {
       using common_value_type = std::common_type_t<ValueType, typename Rhs::value_type>;
       Derived<common_value_type> out{};
       for (std::size_t i = 0; i < capacity; ++i) {
@@ -118,18 +114,26 @@ class operable_array {
                            static_cast<common_value_type>(rhs[i]));
       }
       return out;
+    } else {
+      using common_value_type = std::common_type_t<ValueType, Rhs>;
+      Derived<common_value_type> out{};
+      for (std::size_t i = 0; i < capacity; ++i) {
+        out[i] =
+          operation(static_cast<common_value_type>(self[i]), static_cast<common_value_type>(rhs));
+      }
+      return out;
     }
   }
 
-  template <typename Operation, traits::operable_array Self,
-            traits::arithmetic_or_operable_array Rhs>
+  template <typename Operation, traits::operable_array Self, typename Rhs>
+    requires(traits::same_capacity_operable_arrays<Self, Rhs> || traits::arithmetic<Rhs>)
   constexpr decltype(auto) perform(this Self& self, Rhs const& rhs) {
     Operation operation{};
     for (std::size_t i = 0; i < capacity; ++i) {
-      if constexpr (traits::arithmetic<Rhs>) {
-        operation(self[i], static_cast<ValueType>(rhs));
-      } else {
+      if constexpr (traits::same_capacity_operable_arrays<Self, Rhs>) {
         operation(self[i], static_cast<ValueType>(rhs[i]));
+      } else {
+        operation(self[i], static_cast<ValueType>(rhs));
       }
     }
     return std::forward_like<Self>(self);
