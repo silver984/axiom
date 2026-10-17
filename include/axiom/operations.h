@@ -9,7 +9,7 @@ namespace axiom::operations {
 struct addition final {
   template <typename Lhs, typename Rhs>
     requires requires(Lhs lhs, Rhs rhs) { lhs + rhs; }
-  [[nodiscard]] constexpr auto operator()(Lhs lhs, Rhs rhs) const {
+  [[nodiscard]] constexpr decltype(auto) operator()(Lhs lhs, Rhs rhs) const {
     return lhs + rhs;
   }
 };
@@ -25,7 +25,7 @@ struct addition_assign final {
 struct subtraction final {
   template <typename Lhs, typename Rhs>
     requires requires(Lhs lhs, Rhs rhs) { lhs - rhs; }
-  [[nodiscard]] constexpr auto operator()(Lhs lhs, Rhs rhs) const {
+  [[nodiscard]] constexpr decltype(auto) operator()(Lhs lhs, Rhs rhs) const {
     return lhs - rhs;
   }
 };
@@ -41,7 +41,7 @@ struct subtraction_assign final {
 struct multiplication final {
   template <typename Lhs, typename Rhs>
     requires requires(Lhs lhs, Rhs rhs) { lhs * rhs; }
-  [[nodiscard]] constexpr auto operator()(Lhs lhs, Rhs rhs) const {
+  [[nodiscard]] constexpr decltype(auto) operator()(Lhs lhs, Rhs rhs) const {
     return lhs * rhs;
   }
 };
@@ -57,7 +57,7 @@ struct multiplication_assign final {
 struct division final {
   template <typename Lhs, typename Rhs>
     requires requires(Lhs lhs, Rhs rhs) { lhs / rhs; }
-  [[nodiscard]] constexpr auto operator()(Lhs lhs, Rhs rhs) const {
+  [[nodiscard]] constexpr decltype(auto) operator()(Lhs lhs, Rhs rhs) const {
     return lhs / rhs;
   }
 };

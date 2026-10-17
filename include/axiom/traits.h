@@ -13,7 +13,7 @@ template <typename T>
 concept arithmetic = std::is_arithmetic_v<T>;
 
 template <typename T>
-concept operable_array = requires(T a, T const b, std::uint8_t i) {
+concept operable_array = requires(T a, T const b, std::size_t i) {
   typename T::axiom_operable_array;
   requires arithmetic<typename T::value_type>;
   { a[i] } -> std::same_as<typename T::value_type&>;

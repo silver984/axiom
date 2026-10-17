@@ -9,7 +9,7 @@
 namespace axiom {
 
 template <traits::arithmetic T = float>
-struct vec2 final : public operable_array<vec2, T, 2> {
+struct vec2 final : operable_array<vec2, T, 2> {
   constexpr vec2() = default;
 
   constexpr vec2(T v)
@@ -23,7 +23,7 @@ struct vec2 final : public operable_array<vec2, T, 2> {
   }
 
   template <typename Self>
-  constexpr auto&& operator[](this Self&& self, uint8_t i) {
+  constexpr decltype(auto) operator[](this Self&& self, std::size_t i) {
     return i == 0 ? std::forward_like<Self>(self.x) : std::forward_like<Self>(self.y);
   }
 
